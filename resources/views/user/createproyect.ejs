@@ -1,0 +1,47 @@
+<% include ../inc/header %>
+<div class="col-md-5">
+    <div class="card-body">
+
+        <form method="POST">
+            <div class="form-group">
+                <input type="text" name="NM_Proyect" placeholder="Nombre de proyecto" class="form-control" autofocus>
+            </div>
+            <div class="form-group">
+                <input type="text" name="TP_Proyect" placeholder="Tipo de proyecto" class="form-control">
+            </div>
+            <div class="form-group">
+                <input type="text" name="Stg_Proyect" placeholder="Etapa del proyecto" class="form-control">
+            </div>
+            <div class="form-group">
+                <input type="text" name="Dp_Req" placeholder="Disponibilidad requerida" class="form-control">
+            </div>
+            <div class="form-group">
+                <input type="text" name="Used_Tech" placeholder="Tecnologia utiliazada" class="form-control">
+            </div>
+            <div class="form-group">
+                <input type="text" name="Entregables" placeholder="Entregables" class="form-control">
+            </div>
+            <% proyecto.forEach(function(value, key) { %>
+                <tr>
+                    <td><%= value.NM_Proyect %></td>
+                    <td><%= value.TP_Proyect %></td>
+                    <td><%= value.Stg_Proyect %></td>
+                    <td><%= value.Dp_req %></td>
+                    <td><%= value.UsedTech %></td>
+                    <td><%= value.Entregables %></td>
+                    <td><%= value.Ad_Dat %></td>
+                    <td><%= value.contratistId %></td>
+                </tr>
+                <td><a href="/contratist/<%= contratist.id %>/Eliminar">Eliminar</a></td>
+                <td><a href="/contratist/<%= contratist.id %>/Agregar">Agregar</a></td>
+        <% }); %>
+            <button type="submit" class="btn btn-primary">
+                Enviar
+            </button>
+        </form>
+    </div>
+</div>
+</div>
+
+
+<% include ../inc/footer %>

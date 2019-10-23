@@ -12,7 +12,7 @@ module.exports={
         bcrypt.genSalt(10, (err, salt) => { //Funcion to encrypt the password and store the data
             bcrypt.hash(req.body.password, salt, (err, hash) => {
                 if (err) throw err;
-                model.User.create({ 
+                model.user.create({ 
                     firstName:req.body.firstName,
                     lastName:req.body.lastName,
                     email:req.body.email,
@@ -21,6 +21,7 @@ module.exports={
                 }).then(function(){
                     email=req.body.email;
                     if(req.body.rol=='developer') developerController.associate(email); //function to associate the developer information
+                    if(req.body.rol== 'contratist') developerController.associate(email);
                     console.log('usuario creado')
                     res.redirect('/login');
                 })

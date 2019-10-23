@@ -9,12 +9,8 @@ module.exports={
              email:email
             }
           }).then(function(user){
-              model.developer.create({
-                  userId:user[0].id,
-                  workHours:0,
-                  developerType:'',
-                  expierece:''
-              })
-          })
-    },
+              newFunction(user);
+              console.log('Developer creado')
+          }); 
+    }, 
 }
