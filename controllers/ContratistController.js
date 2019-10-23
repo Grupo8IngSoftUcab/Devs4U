@@ -6,7 +6,7 @@ module.exports = {
   lista(req,res) {
     model.Proyecto1.findAll({
         where: {
-            id: req.user.id
+            contratistId: req.user.id
         } 
         //attributes: ['NM_Proyect','TP_Proyect', 'Stg_Proyect', 'Dp_req','UsedTech', 'Entregables', 'Ad_Dat', 'contratistId']
       })
@@ -18,7 +18,7 @@ module.exports = {
   },
 
   store(req, res) {
-    model.Proyecto.create({
+    model.Proyecto2.create({
     NM_Proyect: req.body.NM_Proyect,
     TP_Proyect: req.body.TP_Proyect,
     Stg_Proyect: req.body.Stg_Proyect,
@@ -35,7 +35,7 @@ module.exports = {
   },
 
   storeIteracion(req, res) {
-    model.Proyecto.create({
+    model.Proyecto2.create({
     ContractorCode:  req.body.ContractorCode,//Se debera cambiar a id del usuario contratista cuando se asocien la tabla
     Begining:  req.body.Begining,
     Ending:  req.body.Final,
@@ -48,7 +48,7 @@ module.exports = {
   },
 
   CancelProyect(req, res) {
-    models.Proyecto
+    models.Proyecto2
     .destroy({
         where: {
             id: req.body.contratistId
@@ -60,7 +60,7 @@ module.exports = {
   },
 
   listaCancelar(req,res) {
-    model.Proyecto.findAll({
+    model.Proyecto2.findAll({
         /*where: {
             contratistId: .req.user.id
         }*/ 
