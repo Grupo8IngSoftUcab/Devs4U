@@ -69,8 +69,6 @@ module.exports=function(app){
     })
 
     app.post('/cancelproyect', (req, res, next) => {
-
-        lista.Actualizar(req.body.valor,req.params.id);
         res.redirect('user/Gestion-Proyecto');
       });
 
