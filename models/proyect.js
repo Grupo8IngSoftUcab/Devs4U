@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
 //npx sequelize-cli model:generate --name Proyecto --attributes NM_Proyect:string,TP_Proyect:string,Srg_Proyect:string,Dp_Req:string,UsedTech:text, Entregables: string, Ad_Dat: text, contratistId: integer
 //npx sequelize-cli model:generate --name developer --attributes workHours:integer,developerType:string,expierece:string,userId:integer
 //npx sequelize-cli model:generate --name user --attributes firstName:string,lastName:string,email:string,password:string,aboutMe:string,residence:string,web:string,rol:string
+//npx sequelize-cli model:generate --name iteracion --attributes ContractorCode:integer,Begining:timestamp,Ending:timestamp,IterationNumber:integer,IterationDesc:text
 //npx sequelize-cli db:migrate
 /*firstName: DataTypes.STRING,
     lastName: DataTypes.STRING,

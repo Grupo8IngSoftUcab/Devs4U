@@ -52,12 +52,12 @@ module.exports=function(app){
         lista.lista(req,res);
     })
 
-    app.get('/contratist/:contratist.id/Eliminar',ensureAuthenticated,function(req,res){
+    app.get('/contratist/:value.contratistId/Eliminar',ensureAuthenticated,function(req,res){
         res.render('/contratist/Eliminar');
     })
 
-    app.get('/contratist/:contratist.id/Agregar',ensureAuthenticated,function(req,res){
-        res.render('/contratist/Agregar');
+    app.get('/contratist/:value.contratistId/Agregar',ensureAuthenticated,function(req,res){
+        lista.storeIteracion(req,res);
     })
 
     app.post('/createproyect', (req, res, next) => {

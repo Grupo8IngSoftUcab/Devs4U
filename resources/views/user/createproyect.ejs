@@ -31,9 +31,10 @@
                     <td><%= value.Entregables %></td>
                     <td><%= value.Ad_Dat %></td>
                     <td><%= value.contratistId %></td>
+                    <td><%= value.Desc %></td>
                 </tr>
-                <td><a href="/contratist/<%= contratist.id %>/Eliminar">Eliminar</a></td>
-                <td><a href="/contratist/<%= contratist.id %>/Agregar">Agregar</a></td>
+                <td><a href="/contratist/<%= value.contratistId %>/Eliminar">Eliminar</a></td>
+                <td><a href="/contratist/<%= value.contratistId %>/Agregar">Agregar</a></td>
         <% }); %>
             <button type="submit" class="btn btn-primary">
                 Enviar

@@ -4,8 +4,11 @@ const bcrypt = require('bcryptjs');
 module.exports = {
 
   lista(req,res) {
-    model.Proyecto.findAll({
-        attributes: ['NM_Proyect','TP_Proyect', 'Stg_Proyect', 'Dp_req','UsedTech', 'Entregables', 'Ad_Dat', 'contratistId']
+    model.Proyecto1.findAll({
+        where: {
+            id: req.user.id
+        } 
+        //attributes: ['NM_Proyect','TP_Proyect', 'Stg_Proyect', 'Dp_req','UsedTech', 'Entregables', 'Ad_Dat', 'contratistId']
       })
       .then(function(result) {
         res.render('user/createproyect', {proyecto: result});
@@ -24,9 +27,49 @@ module.exports = {
     Entregables: req.body.Entregables,  
     Ad_Dat: req.body.Ad_Dat,
     contratistId: req.body.contratistId,
+    Desc: req.body.Desc
     }).then(function () {
       res.render('user/Gestion-Proyecto');
     })
 
   },
+
+  storeIteracion(req, res) {
+    model.Proyecto.create({
+    ContractorCode:  req.body.ContractorCode,//Se debera cambiar a id del usuario contratista cuando se asocien la tabla
+    Begining:  req.body.Begining,
+    Ending:  req.body.Final,
+    IterationNumber:  req.body.IterationNumber,
+    IterationDesc: req.body.IterationDesc,
+    }).then(function () {
+      res.render('user/createproyect');
+    })
+
+  },
+
+  CancelProyect(req, res) {
+    models.Proyecto
+    .destroy({
+        where: {
+            id: req.body.contratistId
+        }
+    }).then(function() {
+        res.redirect('/users');
+    });
+
+  },
+
+  listaCancelar(req,res) {
+    model.Proyecto.findAll({
+        /*where: {
+            contratistId: .req.user.id
+        }*/ 
+        attributes: ['NM_Proyect','TP_Proyect', 'Stg_Proyect', 'Dp_req','UsedTech', 'Entregables', 'Ad_Dat', 'contratistId']
+      })
+      .then(function(result) {
+        res.render('user/cancelproyect', {proyecto: result});
+    })
+      .catch((error) => { res.status(400).send(error); });
+
+  }
 }
