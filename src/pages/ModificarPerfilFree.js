@@ -332,7 +332,7 @@ export default function Dashboard() {
                 <TextField
                 variant="outlined"
                 fullWidth
-                id="idioma2"
+                id="idioma1"
                 label="Idioma 1"
                 />
               </li>

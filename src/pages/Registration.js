@@ -341,7 +341,7 @@ const Registration = props => {
               <Grid container justify="center">
                 <Grid item>
                   <DomLink
-                    to="/login"
+                    to="/"
                     style={{ textDecoration: 'none', color: 'rgb(33,40,53)' }}>
                     <Link variant="body2" className={classes.text}>
                       ¿Ya tiene una cuenta? Inicia Sesión

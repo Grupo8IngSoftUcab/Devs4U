@@ -266,7 +266,7 @@ export default function Dashboard() {
             {/* Main content */}
             <Grid item xs={12} md={8}>
               <Typography variant="h4" gutterBottom>
-                Nombre del Usuario
+              {user.user.firstName + ' ' +user.user.lastName}
               </Typography>
               <Divider />
               <Typography variant="h6" gutterBottom>

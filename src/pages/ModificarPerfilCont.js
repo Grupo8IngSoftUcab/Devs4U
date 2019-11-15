@@ -244,8 +244,6 @@ export default function Dashboard() {
             className={classes.title}>
             Perfil
           </Typography>
-
-         
             
             <Button
               variant="contained"

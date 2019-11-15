@@ -171,17 +171,6 @@ const Login = () => {
     )
   }
 
-  /*
-    const changeColor = () => {
-      if (${options[variant] == "contained"){
-        ${options[variant] == "outlined";
-      }
-      if(${options[variant] == "outlined"){
-        ${options[variant] == "contained";
-      } 
-    };
-    */
-
   return (
     <Container component="main" maxWidth="sm">
       <CssBaseline />
