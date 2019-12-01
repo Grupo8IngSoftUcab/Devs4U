@@ -25,16 +25,7 @@ module.exports={
       .catch(err => res.status(400).send({error:err}));
     },
 
-    delete (req,res){
-        model.Developer.destroy(   
-         {where: {userId: req.user.id}}).then(function(){
-           res.send({success:true});
-        }).catch(err => {res.send({req: req}); 
-        console.log(err)}
-        );      
-    },
-
-    profileInformation(req,res){
+    profile(req,res){
       model.User.findAll({
         where: {id: req.user.id}, 
         include: ['developer'],

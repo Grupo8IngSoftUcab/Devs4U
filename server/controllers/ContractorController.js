@@ -11,7 +11,7 @@ module.exports={
       .catch(err => res.status(400).json('Error: ' + err));
     },
 
-    profileInformation(req,res){
+    profile(req,res){
       model.User.findAll({
         where: {id: req.user.id}, 
         include: ['contractor'],
@@ -20,7 +20,7 @@ module.exports={
       .then(function(contractor){ res.send(contractor)})
       .catch(err => res.status(400).json('Error: ' + err));
     },
-
+    
     update(req,res){
       model.Contractor.update({
         workSearch: req.body.workSearch,
@@ -29,14 +29,5 @@ module.exports={
       .then(function(){res.send({success:true});})
       .catch(err => res.status(400).send({error:err}));
     },
-
-    delete (req,res){
-        model.Contractor.destroy(   
-         {where: {userId: req.user.id}}).then(function(){
-           res.send({success:true});
-        }).catch(err => {res.send({req: req}); 
-        console.log(err)}
-        );      
-    }
 }
 

@@ -9,7 +9,9 @@ module.exports={
         .catch(err => res.status(400).json('Error: ' + err));
     },
 
-    show(req,res){ //Esta feita esta funcion, no me gusta, despues lo cambio
+    show(req,res){ //ACUERDATE DE ARREGLAS LAS RELACIONES DE PROYECTO CON USUARIOS HERMES COÑO
+        //Funcion incompleta, falta relacionar bien el modelo de project con users.
+        //Y aqui realizo 2 consultas, funciona, hace lo que se quiere, pero hay que arreglar las relaciones
         projectId=req.params.id
        
         model.Project.findAll({where: {id:projectId}}) 
@@ -35,8 +37,6 @@ module.exports={
         })
         .then(function(){res.send(200,{message:'Se ha creado el proyecto correctamente'})})
         .catch(err => res.status(400).json('Error: ' + err));
-
-
     },
     
     update(req,res){

@@ -15,6 +15,8 @@ app.use(cors());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(express.static(path.join(publicPath)));
+
+
 app.use(cookieSession({
   secret: 'keyboard cat',
   resave: false,
