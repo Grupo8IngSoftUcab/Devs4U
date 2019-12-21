@@ -11,7 +11,28 @@ module.exports={
           })
           .then(function(){ res.send(200,{message:'El usuario se ha creado correctamente'})})
           .catch(err => res.status(400).json('Error: ' + err));
+    },
+    
+    consultarPerfil(req,res){
+        model.User.findAll({
+            where: {id: req.user.id},
+            include:['freelancer']
+        })
+        .then(function(freelancer){ res.send(freelancer)})
+        .catch(err => res.status(400).json('Error: ' + err));
+    },
+
+    modificarPerfil(req,res){
+        model.Freelancer.update({
+            tiempoExperiencia:req.body.tiempoExperiencia,
+            tipoFreelancer: req.body.tipoFreelancer,
+            status: req.body.status
+        },{where: {id: req.user.id}})
+        .then(function(){ res.send(200,{message:'El usuario se ha modificado correctamente'})})
+        .catch(err => res.status(400).json('Error: ' + err));
 
     }
+
+
 
 }

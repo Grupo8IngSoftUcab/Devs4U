@@ -1,16 +1,17 @@
 const model=require('../models');
+const freelancerController=require('./FreelancerController')
+const contratistaController=require('./ContratistaController')
 
 
 
 module.exports={
-    update (req,res){
+    modificarPerfil(req,res){
         model.User.update({    
-            nombre: req.body.name,
-            correo: req.body.correo,
+            nombre: req.body.nombre,
+            //email: req.body.email,
             //contraseña: req.body.contraseña,
             pais: req.body.pais,
             ciudad:req.body.ciudad,
-            //calificacionesMedia: 0,
             sobreMi: req.body.sobreMi,
             descripcionCorta:req.body.descripcionCorta,
             web: req.body.web,
@@ -21,17 +22,22 @@ module.exports={
         }, {where: {id: req.user.id}})
         
         .then(function(){
-           //if(req.user.rol=='developer') developerController.update(req,res);
-           //else contractorController.update(req,res);   
-           res.send({message:'todo fino'})
+           if(req.user.rol=='freelancer') freelancerController.modificarPerfil(req,res);  
+           res.send(200,{message:'Datos modificados exitosamente'})
         })
         .catch(err => res.status(400).json('Error: ' + err));
         
     },
 
+<<<<<<< HEAD
     profile(req,res){
         if(req.user.rol=='developer') developerController.profileInformation(req,res);
         else contractorController.profileInformation(req,res);
+=======
+    consultarPerfil(req,res){
+        if(req.user.rol=='freelancer') freelancerController.consultarPerfil(req,res);
+        else contratistaController.consultarPerfil(req,res);
+>>>>>>> backend-Hermes2
     },
 
 

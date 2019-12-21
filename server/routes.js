@@ -25,8 +25,8 @@ router.post('/check/auth',checkAuthentication);
 
 
 //Rutas del perfil
-//router.get('/profile/:rol',ensureAuthenticated, userController.profileInformation);//listo
-//router.put('/profile/edit',ensureAuthenticated, userController.update);//listo
+router.get('/profile',ensureAuthenticated, userController.consultarPerfil);
+router.put('/profile/edit',ensureAuthenticated, userController.modificarPerfil);//listo
 //router.post('/delete',ensureAuthenticated, userController.delete);
 
 
