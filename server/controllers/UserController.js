@@ -29,15 +29,10 @@ module.exports={
         
     },
 
-<<<<<<< HEAD
-    profile(req,res){
-        if(req.user.rol=='developer') developerController.profileInformation(req,res);
-        else contractorController.profileInformation(req,res);
-=======
+
     consultarPerfil(req,res){
         if(req.user.rol=='freelancer') freelancerController.consultarPerfil(req,res);
         else contratistaController.consultarPerfil(req,res);
->>>>>>> backend-Hermes2
     },
 
 
