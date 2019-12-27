@@ -130,6 +130,8 @@ export default function Dashboard(props) {
   const classes = useStyles()
   const [open, setOpen] = React.useState(true)
 
+  const search = props.Buscar;
+
   let history = useHistory()
 
   const handleDrawerOpen = () => {
@@ -176,6 +178,9 @@ if(props.type=="contractor"){
           <div className={classes.appBarSpacer} />
           <Container className={classes.cardGrid} maxWidth="md">
             {/* End hero unit */}
+            <Typography gutterBottom variant="h5" component="h2">
+              Resultados de la búsqueda de: {search}
+            </Typography>
             {/* <Grid container spacing={4}> */}
               {/*
                 En la plantilla original, para que salieran varios "trabajos", colocaron:
@@ -235,6 +240,9 @@ else{
               <div className={classes.appBarSpacer} />
               <Container className={classes.cardGrid} maxWidth="md">
                 {/* End hero unit */}
+                <Typography gutterBottom variant="h5" component="h2">
+                  Resultados de la búsqueda de: ___
+                </Typography>
                 {/* <Grid container spacing={4}> */}
                   {/*
                     En la plantilla original, para que salieran varios "trabajos", colocaron:

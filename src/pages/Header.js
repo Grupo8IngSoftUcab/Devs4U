@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import clsx from 'clsx'
 import {
   Typography,
@@ -11,21 +11,23 @@ import {
   Badge,
   CssBaseline,
 } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
+import { fade, makeStyles } from '@material-ui/core/styles'
+import InputBase from '@material-ui/core/InputBase';
 import MenuIcon from '@material-ui/icons/Menu'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import NotificationsIcon from '@material-ui/icons/Notifications'
 import { mainListItemsC, secondaryListItemsC } from './ListaItemsCont'
 import { mainListItems, secondaryListItems } from './ListaItemsFree'
-import Searchbar from '../components/Searchbar'
 import axios from 'axios'
 import { useHistory } from 'react-router-dom'
-
 import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp'
 import fotoPerfil from './images/fotoPerfil.png';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import SearchIcon from '@material-ui/icons/Search';
 
 const drawerWidth = 240
 
@@ -148,13 +150,60 @@ const useStyles = makeStyles(theme => ({
     borderRadius: '20px',
     marginLeft: "15px",
     marginRight: "10px"
-  }
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
+  inputRoot: {
+    color: 'inherit',
+  },
+  inputInput: {
+    padding: theme.spacing(1, 1, 1, 7),
+    transition: theme.transitions.create('width'),
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      width: 120,
+      '&:focus': {
+        width: 200,
+      },
+    },
+  },
+  search: {
+    position: 'relative',
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: fade(theme.palette.common.white, 0.15),
+    '&:hover': {
+      backgroundColor: fade(theme.palette.common.white, 0.25),
+    },
+    marginLeft: 0,
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing(1),
+      width: 'auto',
+    },
+  },
+  searchIcon: {
+    width: theme.spacing(7),
+    height: '100%',
+    position: 'absolute',
+    pointerEvents: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 }))
 
 export default function Header(props) {
   const classes = useStyles()
   const [open, setOpen] = React.useState(true)
   let history = useHistory()
+  const [buscar, setBuscar] = React.useState('');
+  const [search, setSearch] = useState(String)
+  
 
   const handleDrawerOpen = () => {
     setOpen(true)
@@ -192,6 +241,23 @@ export default function Header(props) {
      
     }, []);
 
+    const inputLabel = React.useRef(null);
+    const [labelWidth, setLabelWidth] = React.useState(0);
+  
+    const handleChange = event => {
+      setBuscar(event.target.value);
+    };
+
+    let redir = () => {
+      if(props.type=="contractor"){
+        window.location.href = `/search/contractor`;
+        //window.location.href = `/search/contractor${search}`;
+      }
+      else{
+        window.location.href = `/search/freelancer`;
+      }
+    }  
+
 if(props.type=="contractor"){
         return (
             <div className={classes.root}>
@@ -219,7 +285,28 @@ if(props.type=="contractor"){
                     className={classes.title}>
                     Devs4U
                 </Typography>
-                <Searchbar className={classes.searchbar}/>
+
+                {/*Buscador*/}
+                <form className={classes.searchbar} onSubmit={e => e.preventDefault() || redir()}>
+                  <div className={classes.searchIcon}>
+                    <SearchIcon />
+                  </div>
+                  <InputBase
+                  type="search" 
+                  placeholder="Search…"
+                  classes={{
+                    root: classes.inputRoot,
+                    input: classes.inputInput,
+                  }}
+                    inputProps={{ 'aria-label': 'search' }}
+                    onChange={e => setSearch(e.target.value)}  
+                  />
+                <Select value={buscar} onChange={handleChange} displayEmpty className={classes.selectEmpty}>
+                  <MenuItem value="">Buscar Perfil</MenuItem>
+                  <MenuItem value={1}>Buscar Proyecto</MenuItem>
+                </Select>
+              </form>
+
                 <IconButton color="inherit">
                     {/*badgeContent muestra la cantidad de notificaciones*/}
                     <Badge badgeContent={0} color="secondary">
@@ -283,21 +370,35 @@ if(props.type=="contractor"){
                     className={classes.title}>
                     Devs4U
                   </Typography>
-                  <Searchbar className={classes.searchbar}/>
+                  
+                {/*Buscador*/}
+                <form className={classes.searchbar} onSubmit={e => e.preventDefault() || redir()}>
+                  <div className={classes.searchIcon}>
+                    <SearchIcon />
+                  </div>
+                  <InputBase
+                  type="search" 
+                  placeholder="Search…"
+                  classes={{
+                    root: classes.inputRoot,
+                    input: classes.inputInput,
+                  }}
+                    inputProps={{ 'aria-label': 'search' }}
+                    onChange={e => setSearch(e.target.value)}  
+                  />
+                <Select value={buscar} onChange={handleChange} displayEmpty className={classes.selectEmpty}>
+                  <MenuItem value="">Buscar Perfil</MenuItem>
+                  <MenuItem value={1}>Buscar Proyecto</MenuItem>
+                </Select>
+              </form>
+
                   <IconButton color="inherit">
                     {/*badgeContent muestra la cantidad de notificaciones*/}
                     <Badge badgeContent={0} color="secondary">
                       <NotificationsIcon />
                     </Badge>
                   </IconButton>
-                  <img src={fotoPerfil} className={classes.foto}/>
-                  <Typography
-                    component="h1"
-                    variant="h6"
-                    color="inherit"
-                    noWrap>
-                    Desarrollador
-                  </Typography>
+                  
                 </Toolbar>
               </AppBar>
               <Drawer

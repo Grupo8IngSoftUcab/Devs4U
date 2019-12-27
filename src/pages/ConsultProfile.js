@@ -1,14 +1,8 @@
 import React from 'react';
-import clsx from 'clsx';
 import {
   Typography,
-  Drawer,
-  AppBar,
-  Toolbar,
-  List,
   Divider,
   IconButton,
-  Badge,
   Grid,
   CssBaseline,
   Container,

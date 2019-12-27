@@ -14,8 +14,7 @@ import Dashboard from './pages/Dashboard'
 import GestProject from './pages/GestProject'
 import ConsultMyProfile from './pages/ConsultMyProfile'
 import ConsultProfile from './pages/ConsultProfile'
-
-
+import Buscador from './pages/DashboardBuscador';
 import ProjectProcess from './pages/ProjectProcess';
 
 /* TODO manejar los roles*/
@@ -34,6 +33,9 @@ function App() {
 			{/* Dashboard */}
 			<Route exact path='/dashboard/freelancer' render={ ()=> <Dashboard type="freelancer"/>}/>
 			<Route exact path='/dashboard/contractor' render={ ()=> <Dashboard type="contractor"/>}/>
+			{/* Buscador */}
+			<Route exact path='/search/freelancer' render={ ()=> <Buscador type="freelancer"/>}/>
+			<Route exact path='/search/contractor' render={ ()=> <Buscador type="contractor"/>}/>
 			{/*Profile*/}
 				{/* Consultar Propio*/}
 				<Route exact path='/profile/freelancer' render={ (props)=> <ConsultMyProfile {...props}/>}/>
