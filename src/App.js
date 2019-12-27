@@ -8,15 +8,11 @@ import ConsultProject from './pages/ConsultProject';
 import RecContrasena from './pages/RecContrasena';
 import EditProfile from './pages/EditProfile';
 import RecContraMail from './pages/RecContraMail';
-import PerfilConsulFree from './pages/PerfilConsulFree';
-import ConsultProjectViewCont from './pages/ConsultProjectViewCont'
-import ConsultProjectPortfolio from './pages/ConsultProjectPortfolio';
 import EditProject from './pages/EditProject';
-import ConsultProjectInDevelopment from './pages/ConsultProjectInDevelopment';
 import CreateProject from './pages/CreateProject';
-import TestBackend from './pages/TestBackend';
 import Dashboard from './pages/Dashboard'
 import GestProject from './pages/GestProject'
+import ConsultMyProfile from './pages/ConsultMyProfile'
 import ConsultProfile from './pages/ConsultProfile'
 
 
@@ -28,31 +24,29 @@ function App() {
   return (
     <Router>
 	    <Switch>
-	    
-	    <Route exact path='/test' render={ ()=> <TestBackend/>}/>
 
 			{/*Login and Register*/}
-			<Route exact path='/' render={ ()=> <Login />}/>
-			<Route exact path='/register' render={ ()=> <Registration/>}/>
+			<Route exact path='/' render={ (props)=> <Login {...props}/>}/>
+			<Route exact path='/register' render={ (props)=> <Registration {...props}/>}/>
 			{/*Recuperar Contraseña*/}
 			<Route exact path='/password/set' render={ ()=> <RecContrasena/>}/>
 			<Route exact path='/password/recover' render={ ()=> <RecContraMail/>}/>
 			{/* Dashboard */}
-			<Route exact path='/dashboard/developer' render={ ()=> <Dashboard type="developer"/>}/>
+			<Route exact path='/dashboard/freelancer' render={ ()=> <Dashboard type="freelancer"/>}/>
 			<Route exact path='/dashboard/contractor' render={ ()=> <Dashboard type="contractor"/>}/>
 			{/*Profile*/}
 				{/* Consultar Propio*/}
-				<Route exact path='/profile/freelancer' render={ ()=> <ConsultProfile type="developer"/>}/>
-				<Route exact path='/profile/contractor' render={ ()=> <ConsultProfile type="contractor"/>}/>
+				<Route exact path='/profile/freelancer' render={ (props)=> <ConsultMyProfile {...props}/>}/>
+				<Route exact path='/profile/contractor' render={ (props)=> <ConsultMyProfile {...props} />}/>
 				{/* Consultar Anonimo */}
-				<Route exact path='/developer/view/profile/freelancer' render={ ()=> <ConsultProfile type="developerDev"/>}/>
-				<Route exact path='/developer/view/profile/contractor' render={ ()=> <ConsultProfile type="developerCont"/>}/>	
-				<Route exact path='/contractor/view/profile/freelancer' render={ ()=> <ConsultProfile type="contractorDev"/>}/>
-				<Route exact path='/contractor/view/profile/contractor' render={ ()=> <ConsultProfile type="contractorCont"/>}/>
+				<Route exact path='/view/profile/:id/:rol' render={ (props)=> <ConsultProfile {...props}/>}/>
 				{/* Modificar */}
 				<Route exact path='/profile/modify/free' render={ ()=> <EditProfile type="developer"/>}/>
 				<Route exact path='/profile/modify/cont' render={ ()=> <EditProfile type="contractor"/>}/>
-
+				<Route path={['/http:', '/https:']} component={props => {
+					window.location.replace(props.location.pathname.substr(1)) // substr(1) removes the preceding '/'
+					return null
+				}}/>
 			{/*Proyecto*/}
 				{/* Crear */}
 				<Route exact path='/project/create' render={ ()=> <CreateProject/>}/>
