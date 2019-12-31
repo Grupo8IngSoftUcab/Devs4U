@@ -8,7 +8,7 @@ const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
 const morgan = require('morgan')
-
+var expressValidator = require('express-validator');
 
 const publicPath = path.join(__dirname, '..', 'public');
 
@@ -16,6 +16,7 @@ app.use(cors());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(express.static(path.join(publicPath)));
+app.use(expressValidator());
 app.use(cookieSession({
   secret: 'keyboard cat',
   resave: false,
@@ -28,7 +29,23 @@ app.use(passport.session());
 require('../config/passport')(passport);
 
 app.use(morgan('dev'));
-    
+app.use(expressValidator({
+  errorFormatter: function(param, msg, value) {
+      var namespace = param.split('.')
+      , root    = namespace.shift()
+      , formParam = root;
+
+    while(namespace.length) {
+      formParam += '[' + namespace.shift() + ']';
+    }
+    return {
+      param : formParam,
+      msg   : msg,
+      value : value
+    };
+  }
+}));
+   
 app.set('PORT', process.env.PORT || 5000);
 
 app.use('/',require('./routes'))

@@ -7,6 +7,7 @@ const upload = multer(storage)
 //Middlewares
 const { ensureAuthenticated, forwardAuthenticated } = require('./middlewares/auth');
 
+
 //Auth Controller
 const {register}=require('./controllers/auth/RegisterController')
 const {login}=require('./controllers/auth/LoginController')
@@ -23,18 +24,19 @@ const freelancerController=require('./controllers/FreelancerController')
 const contractorController=require('./controllers/ContractorController')
 const reviewController=require('./controllers/ReviewController')
 const searchController = require('./controllers/SearchController')
+const validationController = require('./controllers/ValidationController');
 //const projectController=require('./controllers/ProjectController');
 
 
 
 //Auths' Routes
-router.post('/register', register);
+router.post('/register',validationController.ValidacionesRegistro, register);
 router.post('/login', login);
 router.post('/logout', logout);
 router.get('/check',checkAuthentication);
 
 //Rutas del perfil
-router.get('/profile',ensureAuthenticated, userController.consultarPerfil);
+router.get('/profile',ensureAuthenticated,validationController.ModificarPerfil, userController.consultarPerfil);
 router.put('/profile/edit',ensureAuthenticated, userController.modificarPerfil);
 router.put('/profile/addphoto',ensureAuthenticated, upload.single('image'), userController.agregarFotoPerfil);
 router.delete('/profile/delete',ensureAuthenticated, userController.eliminarPerfil);
@@ -45,8 +47,8 @@ router.get('/search/contractor', searchController.BuscarPerfilContratista);
 router.get('/search/project', searchController.BuscarProyecto);
 
 //Rutas CRUD de proyecto
-router.put('/project/create',ensureAuthenticated, projectController.crearProyecto)
-router.put('/project/edit/:id',ensureAuthenticated, projectController.modificarProyecto)
+router.put('/project/create',ensureAuthenticated,validationController.CrearProyect,projectController.crearProyecto)
+router.put('/project/edit/:id',ensureAuthenticated, validationController.ModificarProyect,projectController.modificarProyecto)
 router.get('/project/view/:id', ensureAuthenticated,projectController.consultarProyecto)
 router.delete('/project/cancel/:id', ensureAuthenticated,projectController.cancelarProyecto)
 router.get('/project/list/view', ensureAuthenticated,projectController.listarProyectos)
@@ -63,15 +65,15 @@ router.get('/freelancer/postulation/list',ensureAuthenticated,projectPostulation
 
 
 //Rutas experiencias usuario 
-router.post('/profile/experience/add', experienciaController.agregarExperiencia)
-router.put('/profile/experience/edit/:id',experienciaController.modificarExperiencia)
+router.post('/profile/experience/add', validationController.vaidaExperiencia,experienciaController.agregarExperiencia)
+router.put('/profile/experience/edit/:id',validationController.vaidaExperiencia,experienciaController.modificarExperiencia)
 router.delete('/profile/experience/delete/:id',experienciaController.eliminarExperiencia)
 router.get('/profile/experience/list/',experienciaController.consultarListaExperiencia)
 router.get('/profile/experience/edit/list',experienciaController.modificarListaExperiencia)
 
 
 //Rutas educacion usuario
-router.post('/profile/education/add',educacionController.agregarEducacion)
+router.post('/profile/education/add',validationController.validaEducacion,educacionController.agregarEducacion)
 router.put('/profile/education/edit/:id',educacionController.modificarEducacion)
 router.delete('/profile/education/delete/:id',educacionController.eliminarEducacion)
 router.get('/profile/education/list/',educacionController.consultarListaEducacion)
@@ -83,7 +85,7 @@ router.post('/contractor/view/byId/:id',contractorController.consultarPerfilCont
 router.get('/list/freelancers',freelancerController.listarFreelancers)
 router.get('/list/contractors',contractorController.listarContractors)
 
-router.post('/review/add/:id',reviewController.agregarReview)
+router.post('/review/add/:id',validationController.AgregarReview,reviewController.agregarReview)
 router.post('/review/list/:id',reviewController.listarReviewsUsuario)
 router.post('/review/mine/list',reviewController.listarMisReviewsUsuario)
 router.post('/review/view/byId/:id',reviewController.consultarReview)
