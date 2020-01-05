@@ -89,7 +89,7 @@ function App() {
 			<Route exact path='/project/freelancer/send/:id' render={ (props)=> <SendProject {...props}/>}/>
 
 			{/* Revisar Proyecto */}
-				<Route exact path='/contractor/project/review' render={ ()=> <ReviewProject />}/>
+				<Route exact path='/project/review/:id' render={ (props)=> <ReviewProject {...props}/>}/>
 		
 			{/* Calificar Usuario */}
 				<Route exact path='/developer/rate' render={ ()=> <RateUser type="developer"/>}/>

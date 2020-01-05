@@ -2,7 +2,7 @@ const model=require('../models');
 const multer=require('multer')
 
 module.exports={
-
+//
     subirArchivos(req,res){
         console.log(req.file)
         promiseArray=[]
@@ -34,7 +34,7 @@ module.exports={
 
     consultarArchivo(req,res){
         model.archivo.findAll({
-            where: {id: req.params.id},
+            where: {projectId: req.params.id},
         })
         .then(function(archivo){ res.status(200).send(archivo)})
         .catch(err => res.status(400).json('Error: ' + err));

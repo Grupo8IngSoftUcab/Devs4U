@@ -42,7 +42,7 @@ router.post('/images/add',(req,res)=>{
         fs.unlink(req.file.path)
     })
     .then(function(){
-        res.send(200,{message:'La fotose ha salvado exitosamente'})
+        res.send(200,{message:'La foto se ha salvado exitosamente'})
     })
     .catch(err => res.status(400).json('Error: ' + err));
 })

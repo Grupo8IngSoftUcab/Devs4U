@@ -430,9 +430,17 @@ export default function ConsultProject(props) {
                         ):null}
 
                         { project.etapa === 2?(
+                        <DomLink
+                            to={`/project/review/${projectId}`}
+                            style={{
+                              textDecoration: 'none',
+                              color: 'rgb(33,40,53)'
+                            }}>
                         <Button variant="contained" color="primary" className={classes.buttonC}>
                           Revisar
-                        </Button>):null}
+                        </Button>
+                        </DomLink>
+                        ):null}
 
                         </>
                         ):null}
