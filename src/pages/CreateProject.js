@@ -19,12 +19,7 @@ import IndeterminateCheckBoxIcon from '@material-ui/icons/IndeterminateCheckBox'
 import { KeyboardDatePicker } from "@material-ui/pickers";
 import { Link as DomLink} from 'react-router-dom';
 import axios from 'axios';
-
-
-
-
-
-
+import moment from 'moment'
 
 
 function Copyright() {
@@ -272,6 +267,62 @@ export default function CreateProject(props) {
 
   }
 
+  const dataValida = () => {
+    let valida = true
+
+    if(project.titulo.length<1){
+      alert('El campo título de proyecto es requerido')
+      valida=false
+    }
+
+    if(project.tipo.length<1 ){
+      alert('El campo tipo es requerido')
+      valida=false
+    }
+
+    if(project.presupuesto.length<1 ){
+      alert('El campo presupuesto es requerido')
+      valida=false
+    }
+
+    if(!isNormalInteger(project.presupuesto)){
+      alert('El campo presupuesto es numérico')
+      valida=false
+    }
+
+    
+    return valida
+  }
+
+  const isNormalInteger = (str)=> {
+    return /^\+?(0|[1-9]\d*)$/.test(str);
+  }
+
+  const fechasValidas=() => {
+    let valido = true
+
+    let abierto =moment(selectedDateAbierto)
+    let ejecucion = moment(selectedDateEjecucion)
+    let revision = moment(selectedDateRevision)
+
+    if(!abierto.isBefore(ejecucion)){
+      alert('Fecha de etapa abierto debe ser menor a la de ejecución')
+      valido=false
+    }
+
+    if(!ejecucion.isBefore(revision)){
+      alert('Fecha de etapa ejecución debe ser menor a la de revisión')
+      valido=false
+    }
+
+    if(!abierto.isBefore(revision)){
+      alert('Fecha de etapa abierto debe ser menor a la de revisión')
+      valido=false
+    }
+
+    return valido
+  }
+
   const submitToServer=() => {
     let etapasInfo = [{numero:0, nombre:"abierto", deadline:selectedDateAbierto},
             {numero:1, nombre:"ejecucion", deadline:selectedDateEjecucion},
@@ -279,8 +330,10 @@ export default function CreateProject(props) {
 
     let tecnologias = project.tecnologias
 
-    if(tecnologias !== ''){
+    if(tecnologias.length>=1){
       tecnologias= tecnologias.split(',')
+    } else {
+      tecnologias =[]
     }
 
 
@@ -288,26 +341,28 @@ export default function CreateProject(props) {
 
     console.log('data',data)
 
+    if(dataValida() && fechasValidas()){
+      axios({ method: 'put',
+            validateStatus: function(status) {
+              return status >= 200 && status < 500; 
+            },
+            url:`/project/create`, 
+            withCredentials:true,
+            data: data
+          })
+          .then(response =>{
+              console.log('create proj res',response)
 
-    axios({ method: 'put',
-          validateStatus: function(status) {
-            return status >= 200 && status < 500; 
-          },
-          url:`/project/create`, 
-          withCredentials:true,
-          data: data
-        })
-        .then(response =>{
-            console.log('create proj res',response)
+              if(response.status === 200){
+                props.history.push(`/project/manage/contractor`)
+              } 
+              
+          })
+          .catch(error => {
+            console.log('error',error)
+          })
 
-            if(response.status === 200){
-              props.history.push(`/project/manage/contractor`)
-            } 
-            
-        })
-        .catch(error => {
-          console.log('error',error)
-        })
+      }
   }
 
 
@@ -573,10 +628,14 @@ export default function CreateProject(props) {
               <Paper elevation={0} className={classes.sidebarAboutBox}>     
 
                <div className={classes.addMarginBottom}>
+                <div className={classes.labelAndCaption}>
                  <Typography variant="subtitle1" gutterBottom>
-                      <strong>Tipo de Proyecto </strong>
-
+                      <strong>Tipo de Proyecto {'  '}</strong>
                   </Typography>
+                   <Typography variant="caption" gutterBottom className={classes.caption}>
+                  *Requerido
+                  </Typography>
+                </div>
             
                 <TextField
                   variant="outlined"
@@ -619,7 +678,7 @@ export default function CreateProject(props) {
 
                   </Typography>
                   <Typography variant="caption" gutterBottom className={classes.caption}>
-                  numérico
+                  *Requerido. Numérico
                   </Typography>
                 </div>
                 <TextField

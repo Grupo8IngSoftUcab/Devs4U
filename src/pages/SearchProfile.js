@@ -164,7 +164,8 @@ export default function Dashboard(props) {
   const [devPage, setDevPage] = React.useState(1) 
   const [devTotalCount, setDevTotalCount] = React.useState(0) //TODO
   const devPageSize = 6
-  const query = queryString.parse(props.location.search)
+  const [query,setQuery] = React.useState(queryString.parse(props.location.search))
+  //const query = queryString.parse(props.location.search)
  
 
   const increaseDevPage = () => {
@@ -176,6 +177,10 @@ export default function Dashboard(props) {
       setDevPage(page => page - 1);
     }
   }
+
+   React.useEffect(() => {
+    setQuery(queryString.parse(props.location.search))
+  }, [props.location.search]);
 
 
   React.useEffect(() => {
@@ -202,7 +207,7 @@ export default function Dashboard(props) {
           console.log('error',error)
         })
   
-  }, [devPage]);
+  }, [devPage,query]);
 
 
 
@@ -210,6 +215,7 @@ export default function Dashboard(props) {
       <div className={classes.root}>
         <CssBaseline />
         <Header type={myRol}/>
+        {console.log('query',query)}
         {devs?(
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
