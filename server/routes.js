@@ -71,7 +71,7 @@ router.post('/list/freelancers',freelancerController.listarFreelancers)
 router.get('/list/contractors',contractorController.listarContractors)
 
 
-//Rutas CRUD de proyecto,
+//Rutas CRUD de proyecto,,
 router.put('/project/create',ensureAuthenticated, projectController.crearProyecto)
 router.put('/project/edit/:id',ensureAuthenticated, projectController.modificarProyecto)
 router.get('/project/view/:id', ensureAuthenticated,projectController.consultarProyecto)

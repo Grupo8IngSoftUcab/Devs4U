@@ -129,7 +129,7 @@ module.exports={
             })
             .catch(err => res.status(400).json('Error: ' + err));
     },
-    
+    //
     cambiarEtapaProyecto(req,res){
         model.Project.update({
             etapa:req.body.nuevaEtapa,

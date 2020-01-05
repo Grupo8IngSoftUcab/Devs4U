@@ -92,8 +92,7 @@ function App() {
 				<Route exact path='/project/review/:id' render={ (props)=> <ReviewProject {...props}/>}/>
 		
 			{/* Calificar Usuario */}
-				<Route exact path='/developer/rate' render={ ()=> <RateUser type="developer"/>}/>
-				<Route exact path='/contractor/rate' render={ ()=> <RateUser type="contractor"/>}/>
+				<Route exact path='/project/rate/:id' render={ (props)=> <RateUser {...props} />}/>
 
 
 			{/*Not Found*/}

@@ -471,10 +471,29 @@ export default function ConsultProject(props) {
 
 
                       {/*Agregar condicion de los booleanos de proyecto*/}
-                        { project.etapa === 3?(
+                        { project.etapa === 3 && myRol==='freelancer' && (project.estadoReviewFreelancer===false ||project.estadoReviewFreelancer===null)?(
+                        <DomLink
+                            to={`/project/rate/${projectId}`}
+                            style={{
+                              textDecoration: 'none',
+                              color: 'rgb(33,40,53)'
+                            }}>
                         <Button variant="contained" color="primary" className={classes.buttonC}>
-                          Calificar
-                        </Button>):null}
+                          Calificar Contratista
+                        </Button>
+                        </DomLink>):null}
+
+                         { project.etapa === 3 && myRol==='contractor' && (project.estadoReviewContractor===false || project.estadoReviewContractor===null)?(
+                           <DomLink
+                            to={`/project/rate/${projectId}`}
+                            style={{
+                              textDecoration: 'none',
+                              color: 'rgb(33,40,53)'
+                            }}>
+                        <Button variant="contained" color="primary" className={classes.buttonC}>
+                          Calificar Freelancer
+                        </Button>
+                        </DomLink>):null}
 
                         <br/>
                         <br/>

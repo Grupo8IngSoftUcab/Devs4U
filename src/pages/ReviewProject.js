@@ -230,6 +230,50 @@ export default function ReviewProject(props) {
       })
     }
 
+    const handleRejected = () => {
+       axios({ method: 'post',
+        validateStatus: function(status) {
+          return status >= 200 && status < 500; 
+        },
+        url:`/project/stage/change`, 
+        withCredentials:true,
+        data:{ nuevaEtapa: 1, proyectoId:projectId}
+      })
+      .then(response =>{
+          console.log('reject res',response)
+          if(response.status === 200){
+           props.history.push(`/project/view/${projectId}`)
+          } 
+          
+      })
+      .catch(error => {
+        console.log('error',error)
+      })
+    }
+
+    const handleAccepted = () => {
+      axios({ method: 'post',
+        validateStatus: function(status) {
+          return status >= 200 && status < 500; 
+        },
+        url:`/project/stage/change`, 
+        withCredentials:true,
+        data:{ nuevaEtapa: 3, proyectoId:projectId}
+      })
+      .then(response =>{
+          console.log('accept res',response)
+          
+          if(response.status === 200){
+           props.history.push(`/project/rate/${projectId}`)
+          } 
+          
+      })
+      .catch(error => {
+        console.log('error',error)
+      })
+    }
+    
+
     return (
         <div className={classes.root}>
             <CssBaseline />
@@ -282,10 +326,10 @@ export default function ReviewProject(props) {
                     Cancelar
                 </Button>
                 </DomLink>
-                <Button variant="contained" className={classes.butrec} >
+                <Button variant="contained" className={classes.butrec} onClick={handleRejected}>
                     Rechazar
                 </Button>
-                <Button variant="contained" color="primary" className={classes.butac}>
+                <Button variant="contained" color="primary" className={classes.butac} onClick={handleAccepted}>
                     Aceptar
                 </Button>
                 </div>
