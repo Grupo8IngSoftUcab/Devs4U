@@ -188,7 +188,7 @@ export default function ReviewProject(props) {
 
         //moment('2019-11-03T05:00:00.000Z').utc().format('MM/DD/YYYY')
           console.log('review res',response)
-          if(response.status === 200){
+          if(response.status === 200 && response.data.length>=1){
             setFile(response.data[0])
           } 
           
