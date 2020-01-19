@@ -303,15 +303,19 @@ export default function Dashboard(props) {
 
         //nuevosIdiomas: userInfo.idiomas.split(','), nuevasHabilidades: userInfo.habilidades.split(','),
 
-        if(userInfo.idiomas !== null && userInfo.idiomas !== undefined){
+        if(userInfo.idiomas !== null && userInfo.idiomas !== undefined && userInfo.idiomas.length >=1){
           data.nuevosIdiomas = userInfo.idiomas.split(',')
+        } else {
+          data.nuevosIdiomas = []
         }
     
         if(userInfo.rol==='freelancer'){
           data = {user: userInfo, experiencia: experienciaArray, nuevoTipoFreelancer:nuevoTipoFreelancer, nuevoTipoSeniority:nuevoTipoSeniority, deletedEducaciones: deletedEducaciones, deletedExperiencias:deletedExperiencias, modifiedEdu:modEdu, modifiedExp:modExp, newEdu:newEdu, newExp:newExp }
           
-          if( userInfo.habilidades !== null && userInfo.habilidades !== undefined){
+          if( userInfo.habilidades !== null && userInfo.habilidades !== undefined && userInfo.habilidades.length>=1){
             data.nuevasHabilidades= userInfo.habilidades.split(',')
+          } else {
+            data.nuevasHabilidades=[]
           }
 
         } else {
@@ -345,6 +349,11 @@ export default function Dashboard(props) {
     return /^\+?(0|[1-9]\d*)$/.test(str);
   }
 
+  const isValidYear = str => {
+    let reg =new RegExp('19[0-8][0-9]|199[0-9]|20[0-9]{2}|2100')
+    return reg.test(str) || str === '0'
+  }
+
 
   const camposValidos = () => {
     let valido = true
@@ -356,7 +365,7 @@ export default function Dashboard(props) {
     }
 
 
-    if(!isNormalInteger(userInfo.tiempoExperiencia)){
+    if(!isNormalInteger(userInfo.tiempoExperiencia) && userInfo.rol === 'freelancer'){
       alert('El tiempo de experiencia debe ser numérico')
       valido=false  
     }
@@ -367,9 +376,9 @@ export default function Dashboard(props) {
       
       for (var i = 0; i < copyExp.length; i++) {       
 
-         if(!isNormalInteger(copyExp[i].anoInicio) || !isNormalInteger(copyExp[i].anoFin)){
+         if(!isValidYear(copyExp[i].anoInicio) || !isValidYear(copyExp[i].anoFin)){
           valido=false
-          alert(`El año inicio y de fin de experiencia ${i+1} debe ser numérico`)
+          alert(`El año inicio y de fin de experiencia ${i+1} debe ser numérico y entre los años 1900 y 2100`)
           break
         }
       }
@@ -381,15 +390,17 @@ export default function Dashboard(props) {
       let copyEdu = [...educacionArray]
       
       for (var i = 0; i < copyEdu.length; i++) {       
-         if(!isNormalInteger(copyEdu[i].anoInicio)|| !isNormalInteger(copyEdu[i].anoFin)){
+         if(!isValidYear(copyEdu[i].anoInicio)|| !isValidYear(copyEdu[i].anoFin)){
           valido=false
-          alert(`El año inicio y de fin de educación ${i+1} debe ser numérico`)
+          alert(`El año inicio y de fin de educación ${i+1} debe ser numérico y entre los años 1900 y 2100`)
           break
         }
       }
   
     }
 
+   
+  
     return valido
   }
 

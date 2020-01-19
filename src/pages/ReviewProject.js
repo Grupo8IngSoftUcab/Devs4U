@@ -9,12 +9,14 @@ import {
   Divider,
   Card,
   CardContent,
+  CircularProgress
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import EliminarProyectoDialog from '../components/Dialog'
 import { Link as DomLink } from 'react-router-dom'
 import Header from './Header'
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile'
+import axios from 'axios'
 
 function Copyright() {
   return (
@@ -131,7 +133,9 @@ const useStyles = makeStyles(theme => ({
     paddingTop: '56.25%' // 16:9
   },
   cardContent: {
-    flexGrow: 1
+    flexGrow: 1,
+    display:'flex',
+    justifyContent:'space-between'
   },
   media:{
     backgroundColor:"#FFC100",
@@ -145,27 +149,130 @@ const useStyles = makeStyles(theme => ({
   },
   butac: {
     marginTop: "30px",
-    marginLeft: "20px"
+    marginLeft: "30px"
+    
   },
   butrec: {
     marginTop: "30px",
-    marginLeft: "20px",
+     marginLeft: "30px",
     color:"#FFFFFF",
     backgroundColor: "#FF1E1E",
   },
   butcan: {
     marginTop: "30px",
-    marginLeft: "450px"
+    
   },
   down: {
     marginLeft: "300px",
   },
+  centerButtons:{
+    display:'flex',
+    justifyContent:'center'
+  }
 }))
 
-export default function ReviewProject() {
+export default function ReviewProject(props) {
     const classes = useStyles()
-    var cards = [1, 2, 3]
-    const [checked, setChecked] = React.useState(true);
+    const projectId = props.match.params.id
+    const [file,setFile]=React.useState(undefined);
+
+    React.useEffect(() => {
+      axios({ method: 'post',
+        validateStatus: function(status) {
+          return status >= 200 && status < 500; 
+        },
+        url:`/project/view/file/${projectId}`, 
+        withCredentials:true
+      })
+      .then(response =>{
+
+        //moment('2019-11-03T05:00:00.000Z').utc().format('MM/DD/YYYY')
+          console.log('review res',response)
+          if(response.status === 200 && response.data.length>=1){
+            setFile(response.data[0])
+          } 
+          
+      })
+      .catch(error => {
+        console.log('error',error)
+      })
+     
+    }, []);
+
+    const handleDownloadFile = () => {
+
+      //window.open(`/project/download/file/${file.filePath}`)
+      console.log('download')
+       axios({ method: 'post',
+        validateStatus: function(status) {
+          return status >= 200 && status < 500; 
+        },
+        url:`/project/download/file/${file.filePath}`, 
+        withCredentials:true,
+        responseType: 'blob',
+      })
+      .then(response =>{
+
+        //moment('2019-11-03T05:00:00.000Z').utc().format('MM/DD/YYYY')
+          console.log('download res',response)
+          if(response.status === 200){
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', file.filePath);
+            document.body.appendChild(link);
+            link.click();
+          } 
+          
+      })
+      .catch(error => {
+        console.log('error',error)
+      })
+    }
+
+    const handleRejected = () => {
+       axios({ method: 'post',
+        validateStatus: function(status) {
+          return status >= 200 && status < 500; 
+        },
+        url:`/project/stage/change`, 
+        withCredentials:true,
+        data:{ nuevaEtapa: 1, proyectoId:projectId}
+      })
+      .then(response =>{
+          console.log('reject res',response)
+          if(response.status === 200){
+           props.history.push(`/project/view/${projectId}`)
+          } 
+          
+      })
+      .catch(error => {
+        console.log('error',error)
+      })
+    }
+
+    const handleAccepted = () => {
+      axios({ method: 'post',
+        validateStatus: function(status) {
+          return status >= 200 && status < 500; 
+        },
+        url:`/project/stage/change`, 
+        withCredentials:true,
+        data:{ nuevaEtapa: 3, proyectoId:projectId}
+      })
+      .then(response =>{
+          console.log('accept res',response)
+          
+          if(response.status === 200){
+           props.history.push(`/project/rate/${projectId}`)
+          } 
+          
+      })
+      .catch(error => {
+        console.log('error',error)
+      })
+    }
+    
 
     return (
         <div className={classes.root}>
@@ -176,12 +283,12 @@ export default function ReviewProject() {
             <Container className={classes.cardGrid} maxWidth="md">
                 <Grid item xs={12} md={4}>
                     <Typography component="h1" variant="h5" color="textPrimary" gutterBottom>
-                        Etapa: Revisión 
+                        <strong> Etapa: Revisión </strong>
                     </Typography>
                 </Grid>
                 <Grid item xs={12} md={12}>
-                    <Typography component="h1" variant="h6" color="textPrimary" gutterBottom>
-                        Para promover el proyecto a la etapa de finalizado debe aprobar la entrega realizada. 
+                    <Typography component="h1" variant="subtitle1" color="textPrimary" gutterBottom>
+                        Para promover el proyecto a la etapa de finalizado debe aprobar la entrega realizada. <br/> 
                         En caso de rechazo, la etapa de proyecto se retrasa a ejecución.
                     </Typography>
                     <br/>
@@ -190,31 +297,42 @@ export default function ReviewProject() {
                     <Divider/>
                 </Grid>
                 <Grid container spacing={4} className={classes.grid}>
-                {cards.map(card => (
-                    <Grid item key={card} xs={12} sm={6} md={12}>
+                {file?(
+                    <Grid item xs={12} sm={6} md={12}>
                     <Card className={classes.card}>
                         <CardContent className={classes.cardContent}>
                         <Typography content="h2" variant="h6"> 
-                            <InsertDriveFileIcon className={classes.text}/>Archivo1.html
-                            <strong className={classes.text}>99.9Mb/99.9Mb</strong>
-                            <Button variant="contained" className={classes.down}>
-                                Descargar
-                            </Button>
+                           {file.filePath}
+                          
+                            
                         </Typography>
+                        <Button variant="contained" className={classes.down} onClick={handleDownloadFile}>
+                                Descargar
+                        </Button>
                         </CardContent>
                     </Card>
                     </Grid>
-                ))}
+                    ):(<CircularProgress/>)}
+                
                 </Grid>
-                <Button variant="contained" className={classes.butrec}>
-                    Rechazar
-                </Button>
+                <div className={classes.centerButtons}>
+                 <DomLink
+                    to={`/project/view/${projectId}`}
+                    style={{
+                      textDecoration: 'none',
+                      color: 'rgb(33,40,53)'
+                  }}>
                 <Button variant="contained" className={classes.butcan}>
                     Cancelar
                 </Button>
-                <Button variant="contained" color="primary" className={classes.butac}>
+                </DomLink>
+                <Button variant="contained" className={classes.butrec} onClick={handleRejected}>
+                    Rechazar
+                </Button>
+                <Button variant="contained" color="primary" className={classes.butac} onClick={handleAccepted}>
                     Aceptar
                 </Button>
+                </div>
             </Container>
             <Copyright />
             </main>

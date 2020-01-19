@@ -6,6 +6,7 @@ const Op = Sequelize.Op;
 module.exports={
     
        crearProyecto(req,res){
+        console.log('req.body',req.body)
         model.Project.create({ 
             titulo: req.body.titulo,
             etapa: 0,
@@ -129,7 +130,7 @@ module.exports={
             })
             .catch(err => res.status(400).json('Error: ' + err));
     },
-    
+    //
     cambiarEtapaProyecto(req,res){
         model.Project.update({
             etapa:req.body.nuevaEtapa,

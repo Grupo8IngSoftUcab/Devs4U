@@ -172,6 +172,7 @@ export default function ConsultProject(props) {
   const [project, setProject] =React.useState('');
   const myRol= sessionStorage.getItem('rol');
   const myId= sessionStorage.getItem('userId');
+  const [file,setFile]=React.useState(undefined);
 
  
   
@@ -307,6 +308,63 @@ export default function ConsultProject(props) {
     }
   }
 
+
+
+
+    React.useEffect(() => {
+      axios({ method: 'post',
+        validateStatus: function(status) {
+          return status >= 200 && status < 500; 
+        },
+        url:`/project/view/file/${projectId}`, 
+        withCredentials:true
+      })
+      .then(response =>{
+          console.log('file res',response)
+          if(response.status === 200 && response.data.length>=1){
+            setFile(response.data[0])
+          } 
+          
+      })
+      .catch(error => {
+        console.log('error',error)
+      })
+     
+    }, []);
+
+    const handleDownloadFile = () => {
+
+      //window.open(`/project/download/file/${file.filePath}`)
+      if(file !==undefined){
+      console.log('download')
+       axios({ method: 'post',
+        validateStatus: function(status) {
+          return status >= 200 && status < 500; 
+        },
+        url:`/project/download/file/${file.filePath}`, 
+        withCredentials:true,
+        responseType: 'blob',
+      })
+      .then(response =>{
+
+        //moment('2019-11-03T05:00:00.000Z').utc().format('MM/DD/YYYY')
+          console.log('download res',response)
+          if(response.status === 200){
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', file.filePath);
+            document.body.appendChild(link);
+            link.click();
+          } 
+          
+      })
+      .catch(error => {
+        console.log('error',error)
+      })
+      }
+    }
+
   //const getSteps =() => {
   //return ['Abierto  17/12/2019', 'Ejecución  17/12/2019', 'Revisión  17/12/2019', 'Finalizado  17/12/2019'];
  // }
@@ -430,9 +488,17 @@ export default function ConsultProject(props) {
                         ):null}
 
                         { project.etapa === 2?(
+                        <DomLink
+                            to={`/project/review/${projectId}`}
+                            style={{
+                              textDecoration: 'none',
+                              color: 'rgb(33,40,53)'
+                            }}>
                         <Button variant="contained" color="primary" className={classes.buttonC}>
                           Revisar
-                        </Button>):null}
+                        </Button>
+                        </DomLink>
+                        ):null}
 
                         </>
                         ):null}
@@ -463,10 +529,29 @@ export default function ConsultProject(props) {
 
 
                       {/*Agregar condicion de los booleanos de proyecto*/}
-                        { project.etapa === 3?(
+                        { project.etapa === 3 && myRol==='freelancer' && (project.estadoReviewFreelancer===false ||project.estadoReviewFreelancer===null)?(
+                        <DomLink
+                            to={`/project/rate/${projectId}`}
+                            style={{
+                              textDecoration: 'none',
+                              color: 'rgb(33,40,53)'
+                            }}>
                         <Button variant="contained" color="primary" className={classes.buttonC}>
-                          Calificar
-                        </Button>):null}
+                          Calificar Contratista
+                        </Button>
+                        </DomLink>):null}
+
+                         { project.etapa === 3 && myRol==='contractor' && (project.estadoReviewContractor===false || project.estadoReviewContractor===null)?(
+                           <DomLink
+                            to={`/project/rate/${projectId}`}
+                            style={{
+                              textDecoration: 'none',
+                              color: 'rgb(33,40,53)'
+                            }}>
+                        <Button variant="contained" color="primary" className={classes.buttonC}>
+                          Calificar Freelancer
+                        </Button>
+                        </DomLink>):null}
 
                         <br/>
                         <br/>
@@ -495,6 +580,7 @@ export default function ConsultProject(props) {
                           <br/>
                           {project.tipo}
                         </Typography>
+                        <Divider />
                         {project.tecnologias !== undefined && project.tecnologias.length >=1? (
                           <>
                           <Typography paragraph>
@@ -507,6 +593,8 @@ export default function ConsultProject(props) {
                             <Chip label={tech}/>
                             ))}
                           </div>
+                          <br/>
+                           <Divider />
                         </>
                         ):null}
                         <Typography paragraph>
@@ -516,6 +604,18 @@ export default function ConsultProject(props) {
                           {`${project.presupuesto} Bs`}
                         </Typography>
                         <Divider />
+                        { file?(
+                          <>
+                          <Typography paragraph>
+                          <br/>
+                          <strong>Archivo Asociado</strong>
+                          <br/>
+                          {file.filePath}
+                        </Typography>
+                        <Button variant="contained" onClick={handleDownloadFile}>
+                                Descargar
+                        </Button>
+                        </>):null}
                       </Grid>
                       {/* End sidebar */}
                     </Grid>

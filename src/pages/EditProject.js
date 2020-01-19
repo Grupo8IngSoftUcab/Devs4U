@@ -228,6 +228,62 @@ export default function EditProject(props) {
     setSelectedDateRevision(date);
   };
 
+  const dataValida = () => {
+    let valida = true
+
+    if(project.titulo.length<1){
+      alert('El campo título de proyecto es requerido')
+      valida=false
+    }
+
+    if(project.tipo.length<1 ){
+      alert('El campo tipo es requerido')
+      valida=false
+    }
+
+    if(project.presupuesto.length<1 ){
+      alert('El campo presupuesto es requerido')
+      valida=false
+    }
+
+    if(!isNormalInteger(project.presupuesto)){
+      alert('El campo presupuesto es numérico')
+      valida=false
+    }
+
+
+    return valida
+  }
+
+ const isNormalInteger = (str)=> {
+    return /^\+?(0|[1-9]\d*)$/.test(str);
+  }
+
+  const fechasValidas=() => {
+    let valido = true
+
+    let abierto =moment(selectedDateAbierto)
+    let ejecucion = moment(selectedDateEjecucion)
+    let revision = moment(selectedDateRevision)
+
+    if(!abierto.isBefore(ejecucion)){
+      alert('Fecha de etapa abierto debe ser menor a la de ejecución')
+      valido=false
+    }
+
+    if(!ejecucion.isBefore(revision)){
+      alert('Fecha de etapa ejecución debe ser menor a la de revisión')
+      valido=false
+    }
+
+    if(!abierto.isBefore(revision)){
+      alert('Fecha de etapa abierto debe ser menor a la de revisión')
+      valido=false
+    }
+
+    return valido
+  }
+
   const handleChange = e => {
     setProject({ ...project, [e.target.name]: e.target.value })
   }
@@ -282,8 +338,10 @@ export default function EditProject(props) {
 
     let tecnologias = project.tecnologias
 
-    if(tecnologias !== '' && !Array.isArray(tecnologias)){
+    if(tecnologias.length>=1){
       tecnologias= tecnologias.split(',')
+    } else {
+      tecnologias =[]
     }
 
 
@@ -291,7 +349,7 @@ export default function EditProject(props) {
 
     console.log('data',data)
 
-
+  if(dataValida() && fechasValidas()){
    axios({ method: 'put',
           validateStatus: function(status) {
             return status >= 200 && status < 500; 
@@ -311,6 +369,7 @@ export default function EditProject(props) {
         .catch(error => {
           console.log('error',error)
         })
+    }
   } //fin submit to server
 
   React.useEffect(() => {
@@ -610,10 +669,14 @@ export default function EditProject(props) {
               <Paper elevation={0} className={classes.sidebarAboutBox}>     
 
                <div className={classes.addMarginBottom}>
+                <div className={classes.labelAndCaption}>
                  <Typography variant="subtitle1" gutterBottom>
                       <strong>Tipo de Proyecto </strong>
-
+                      <Typography variant="caption" gutterBottom className={classes.caption}>
+                        *Requerido.
+                      </Typography>
                   </Typography>
+                </div>
             
                 <TextField
                   variant="outlined"
@@ -656,7 +719,7 @@ export default function EditProject(props) {
 
                   </Typography>
                   <Typography variant="caption" gutterBottom className={classes.caption}>
-                  numérico
+                  *Requerido. Numérico
                   </Typography>
                 </div>
                 <TextField

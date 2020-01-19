@@ -167,7 +167,8 @@ export default function Dashboard(props) {
   const [projectTotalCount, setProjectTotalCount] = React.useState(0) 
   const [projects,setProjects] = React.useState(undefined);
   const projectPageSize = 9
-  const query = queryString.parse(props.location.search)
+  //const query = queryString.parse(props.location.search)
+  const [query,setQuery] = React.useState(queryString.parse(props.location.search))
   
 
   const increaseProjectPage = () => {
@@ -179,6 +180,11 @@ export default function Dashboard(props) {
       setProjectPage(page => page - 1);
     }
   }
+
+  React.useEffect(() => {
+    setQuery(queryString.parse(props.location.search))
+  }, [props.location.search]);
+
 
 
 
@@ -206,7 +212,7 @@ export default function Dashboard(props) {
           console.log('error',error)
         })
   
-  }, [projectPage]);
+  }, [projectPage,query]);
 
         return (
           <div className={classes.root}>

@@ -7,7 +7,8 @@ import {
   Link,
   Button,
   Divider,
-  TextField
+  TextField,
+  CircularProgress
 } from '@material-ui/core'
 import Rating from '@material-ui/lab/Rating';
 import { makeStyles } from '@material-ui/core/styles'
@@ -16,6 +17,7 @@ import { Link as DomLink } from 'react-router-dom'
 import Header from './Header'
 import PersonIcon from '@material-ui/icons/Person'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
+import axios from 'axios'
 
 function Copyright() {
   return (
@@ -172,81 +174,116 @@ const useStyles = makeStyles(theme => ({
 
 export default function RateUser(props) {
   const classes = useStyles()
-  const [open, setOpen] = React.useState(true)
-  const handleDrawerOpen = () => {
-    setOpen(true)
-  }
-  const handleDrawerClose = () => {
-    setOpen(false)
-  }
+  const myRol= sessionStorage.getItem('rol');
+  const projectId = props.match.params.id
+  const [project,setProject]=React.useState(undefined)
+  const [value, setValue] = React.useState(0);
+  const [descripcion, setDescripcion] = React.useState('');
 
-  //Dialog Eliminar
-  const [openDialog, setOpenDialog] = React.useState(false)
-  //const[selectedProject, setSelectedProject] = React.useState('');
+   React.useEffect(() => {
+      axios({ method: 'get',
+        validateStatus: function(status) {
+          return status >= 200 && status < 500; 
+        },
+        url:`/project/view/${projectId}`, 
+        withCredentials:true
+      })
+      .then(response =>{
+          console.log('consultar res',response)
+          if(response.status === 200){
+            setProject(response.data[0]) 
+            
+          } 
+          
+      })
+      .catch(error => {
+        console.log('error',error)
+      })
+     
+    }, []);
 
-  const handleClickOpenDialog = () => {
-    setOpenDialog(true)
-  }
+   const validarInput = () => {
+    let valido = true
 
-  const handleCloseDialog = () => {
-    setOpenDialog(false)
-  }
+    if(value===0){
+      alert('Debe colocar una calificación')
+      valido=false
+    }
 
-    if(props.type=="contractor"){
-        return (
-            <div className={classes.root}>
-                <CssBaseline />
-                <Header type="contractor"/>
-                <main className={classes.content}>
-                <div className={classes.appBarSpacer} />
-                <Container className={classes.cardGrid} maxWidth="md">
-                    <Grid item xs={12} md={12}>
-                        <Typography component="h1" variant="h5" color="textPrimary" gutterBottom>
-                            Calificación para David José Zacarías 
-                        </Typography>
-                        <br/>
-                    </Grid>
-                    <Grid item xs={12} md={12}>
-                        <Divider/>
-                    </Grid>
-                    <Grid item xs={12} md={12}>
-                        <Typography component="h1" variant="h6" align="center" color="textPrimary" gutterBottom className={classes.rating}>
-                            Elige la cantidad de estrellas
-                        </Typography>
-                        <Typography align="center">
-                            <Rating value={0} align="center" size="large"/>
-                        </Typography>
-                        <Typography align="center">
-                            <TextField
-                            label="Comentario"
-                            multiline
-                            rows="10"
-                            variant="outlined"
-                            className={classes.textfield}
-                            />
-                        </Typography>
-                        <Typography align="center">
-                            <Button variant="contained" color="primary" className={classes.but}>
-                                Enviar 
-                            </Button>
-                        </Typography>
-                    </Grid>
-                </Container>
-                <Copyright />
-                </main>
-            </div>
-        );
-    }else{
-        return (
+    if(descripcion ==='') {
+      alert('Debe escribir un comentario')
+      valido=false
+    }
+
+    return valido
+   }
+
+   const handleCalification = () => {
+
+    let url = ''
+    if(myRol=== 'contractor'){
+      url=`/review/add/${project.encargado.id}`
+    } else {
+      url=`/review/add/${project.creador.id}`
+    }
+    
+
+    if(validarInput()){
+      
+      let promiseArray = []
+
+      promiseArray.push(
+        axios({ method: 'post',
+          validateStatus: function(status) {
+            return status >= 200 && status < 500; 
+          },
+          url:url, 
+          withCredentials:true,
+          data:{descripcion:descripcion,calificacion:value}
+        })
+      )
+
+      promiseArray.push(
+         axios({ method: 'post',
+          validateStatus: function(status) {
+            return status >= 200 && status < 500; 
+          },
+          url:`/project/change/state/review/${projectId}`, 
+          withCredentials:true
+          
+        })
+
+      )
+      
+
+      Promise.all(promiseArray).then(response =>{
+          console.log('calification res',response)
+          if(response[0].status === 200 && response[1].status == 200){
+            props.history.push(`/project/view/${projectId}`)
+          } 
+          
+      })
+      .catch(error => {
+        console.log('error',error)
+      })
+    }
+
+   }
+
+
+    return (
         <div className={classes.root}>
             <CssBaseline />
-            <Header type="developer"/>
+            <Header type={myRol}/>
+            {console.log('value',value)}
+            {console.log('descripcion',descripcion)}
             <main className={classes.content}>
             <div className={classes.appBarSpacer} />
+           { project?(
             <Container className={classes.cardGrid} maxWidth="md">
                 <Grid item xs={12} md={12}>
                     <Typography component="h1" variant="h5" color="textPrimary" gutterBottom>
-                        Calificación para David José Zacarías 
+                        Calificación para {myRol==='contractor'?(project.encargado.nombre):(project.creador.nombre)}
                     </Typography>
                     <br/>
                 </Grid>
@@ -258,7 +295,7 @@ export default function RateUser(props) {
                         Elige la cantidad de estrellas
                     </Typography>
                     <Typography align="center">
-                        <Rating value={0} align="center" size="large"/>
+                        <Rating value={value} align="center" size="large" name="calificacion" onChange={(event, newValue) => {setValue(newValue);}}/>
                     </Typography>
                     <Typography align="center">
                         <TextField
@@ -267,18 +304,21 @@ export default function RateUser(props) {
                         rows="10"
                         variant="outlined"
                         className={classes.textfield}
+                        onChange={(e)=>{setDescripcion(e.target.value)}}
+                        value={descripcion}
                         />
                     </Typography>
                     <Typography align="center">
-                        <Button variant="contained" className={classes.but2}>
+                        <Button variant="contained" color="primary" className={classes.but} onClick={handleCalification}>
                             Enviar 
                         </Button>
                     </Typography>
                 </Grid>
             </Container>
+            ):(<CircularProgress/>)}
             <Copyright />
             </main>
         </div>
-        );
-    }
+    );
+
 }
